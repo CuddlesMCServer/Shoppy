@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.1",
     function(plugin)
     
         plugin.onEnable(
