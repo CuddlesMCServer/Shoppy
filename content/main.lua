@@ -181,7 +181,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                             end
                         else
                             sender:sendMessage("§cStaff commands for /shoppy")
-                            sender:sendMessage("§7/shoppy admin create {shop}")
+                            sender:sendMessage("§7/shoppy admin create {shop} {owner}")
                             sender:sendMessage("§7/shoppy admin delete {shop}")
                             sender:sendMessage("§7/shoppy admin rename {shop} {new}")
                             sender:sendMessage("§7/shoppy admin transfer {shop} {name}")
@@ -197,7 +197,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                     else
                         sender:sendMessage("§cCommands for /shoppy and /shop")
                         sender:sendMessage("§7/shoppy default {shop}")
-                        sender:sendMessage("§7/shoppy create {shop} {owner}")
+                        sender:sendMessage("§7/shoppy create {shop}")
                         sender:sendMessage("§7/shoppy rename {shop} {new}")
                         sender:sendMessage("§7/shoppy transfer {shop} {name}")
                         sender:sendMessage("§7/shoppy open {shop}")
