@@ -1,0 +1,2 @@
+# Shoppy
+Shoppy plugin
