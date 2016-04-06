@@ -16,6 +16,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                 plugin.config.setDefault("lang.message.closed", "&9Error: &cThat shop is closed.")
                 plugin.config.setDefault("lang.message.information", "&9{shop} &7is owned by &9{name}.")
                 plugin.config.setDefault("lang.message.default", "&9{shop} &7is now default! Type &9/shop &7to go there.")
+                plugin.config.setDefault("lang.message.taken", "&9Error: &cThat shop already exists.")
                 plugin.config.save()
                 
                 plugin.print("Shoppy has been enabled, version "..plugin.version)
@@ -130,12 +131,45 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                 if sender:hasPermission("shoppy.setdefault") or sender:hasPermission("shoppy.manage") or sender:hasPermission("shoppy.admin") then
                     if args[1] == "admin" then
                         if args[2] == "create" then
+                            if args[3] then
+                                if shops.exists(args[3]) then
+                                    local message = plugin.config.get("lang.message.taken")
+                                    message = string.gsub(message, "{shop}", args[3])
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
+                                else
+                                    if args[4] then
+                                        local location = sender:getLocation()
+                                        local posX = location:getX()
+                                        local posY = location:getY()
+                                        local posZ = location:getZ()
+                                        local posP = location:getPitch()
+                                        local posW = location:getYaw()
+                                        shops.create(args[3], args[4], posX, posY, posZ, posP, posW)
+                                        local message = plugin.config.get("lang.message.create")
+                                        message = string.gsub(message, "{shop}", args[3])
+                                        message = string.gsub(message, "&", "§")
+                                        sender:sendMessage(message)
+                                    else
+                                        sender:sendMessage("§7/shoppy admin create {shop} {owner}")
+                                    end
+                                end
+                            else
+                                sender:sendMessage("§7/shoppy admin create {shop} {owner}")
+                            end
                         elseif args[2] == "delete" then
                         elseif args[2] == "rename" then
                         elseif args[2] == "transfer" then
                         elseif args[2] == "default" then
                             if args[3] then
                                 if shops.exists(args[3]) == true then
+                                    args[3] = string.upper(args[3])
+                                    plugin.config.set("config.default", args[3])
+                                    plugin.config.save()
+                                    local message = plugin.config.get("lang.message.default")
+                                    message = string.gsub(message, "{shop}", args[3])
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
                                 else
                                     local message = plugin.config.get("lang.message.missing")
                                     message = string.gsub(message, "{shop}", args[3])
@@ -163,7 +197,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                     else
                         sender:sendMessage("§cCommands for /shoppy and /shop")
                         sender:sendMessage("§7/shoppy default {shop}")
-                        sender:sendMessage("§7/shoppy create {shop}")
+                        sender:sendMessage("§7/shoppy create {shop} {owner}")
                         sender:sendMessage("§7/shoppy rename {shop} {new}")
                         sender:sendMessage("§7/shoppy transfer {shop} {name}")
                         sender:sendMessage("§7/shoppy open {shop}")
