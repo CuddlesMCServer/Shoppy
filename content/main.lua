@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.1",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.2",
     function(plugin)
     
         plugin.onEnable(
@@ -28,26 +28,8 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.1",
             end
         )
         
-        plugin.addCommand("shoppy", "Administration command for the plugin Shoppy", "/shoppy help",
-            function(sender, args)
-                local uuid = sender:getUniqueId():toString()
-                if args[1] == "admin" then
-                    sender:sendMessage("§6============ §cShoppy Admin §6============")
-                    sender:sendMessage("§c/shoppy admin default {shop}")
-                else
-                    sender:sendMessage("§6============ §eShoppy "..plugin.version.." §6============")
-                    plugin.config.setDefault(uuid..".default", "SHOP")
-                    plugin.config.save()
-                    sender:sendMessage("§eYour default shop is: "..plugin.config.get(uuid..".default"))
-                    sender:sendMessage("§eUsage: &o/shop [floor] &eOR &o/shop {shop} [floor]")
-                    sender:sendMessage("§eSet your default shop with /shoppy default {shop} [floor]")
-                    sender:sendMessage("§eThe default server shop is: "..plugin.config.get("config.default"))
-                    if sender:hasPermission("shoppy.admin") then
-                        sender:sendMessage("§cUse /shoppy admin for admin commands")
-                    end
-                end
-            end
-        )
+        --[[
+        ]]--
         
     end
 )
