@@ -96,7 +96,8 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.2",
                 if not args[1] then args[1] = plugin.config.get("config.default") end
                 if shops.exists(args[1]) then
                 else
-                    sender:sendMessage("This 
+                    sender:sendMessage(plugin.config.get("lang.message.missing"))
+                end
             end
         )
         
