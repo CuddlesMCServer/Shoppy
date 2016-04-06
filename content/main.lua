@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.2",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.3",
     function(plugin)
     
         plugin.onEnable(
@@ -14,8 +14,8 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.2",
                 plugin.config.setDefault("lang.message.whitelistrem", "&7You have removed &9{name}&7 from the shop &9{shop}&7's whitelist.")
                 plugin.config.setDefault("lang.message.manageradd", "&7You have added &9{name}&7 as manager of shop &9{shop}&7.")
                 plugin.config.setDefault("lang.message.managerrem", "&7You have removed &9{name}&7 from manager of shop &9{shop}&7.")
-                plugin.config.setDefault("lang.message.transfer", "&7You have transferred ownership of &9{shop}&7 to &9{name}")
-                plugin.config.setDefault("lang.message.missing", "&9Error: &cThat shop does not exist")
+                plugin.config.setDefault("lang.message.transfer", "&7You have transferred ownership of &9{shop}&7 to &9{name}&7.")
+                plugin.config.setDefault("lang.message.missing", "&9Error: &cThat shop does not exist.")
                 plugin.config.save()
                 
                 plugin.print("Shoppy has been enabled, version "..plugin.version)
@@ -93,10 +93,17 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.2",
         
         plugin.addCommand("shop", "Teleport to a shop", "/shop [name] [level]]", 
             function(sender, args)
-                if not args[1] then args[1] = plugin.config.get("config.default") end
-                if shops.exists(args[1]) then
+                if sender:hasPermission("shoppy.travel") then
+                    if not args[1] then args[1] = plugin.config.get("config.default") end
+                    if shops.exists(args[1]) then
+                    else
+                        local message = plugin.config.get("lang.message.missing")
+                        message = string.gsub(message, "{shop}", args[1])
+                        message = string.gsub(message, "&", "§")
+                        sender:sendMessage(message)
+                    end
                 else
-                    sender:sendMessage(plugin.config.get("lang.message.missing"))
+                    sender:sendMessage("§9Error: §cYou do not have permission")
                 end
             end
         )
