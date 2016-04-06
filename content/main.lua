@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.4",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
     function(plugin)
     
         plugin.onEnable(
@@ -14,6 +14,8 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.4",
                 plugin.config.setDefault("lang.message.missing", "&9Error: &cThat shop does not exist.")
                 plugin.config.setDefault("lang.message.permission", "&9Error: &cYou do not have permission.")
                 plugin.config.setDefault("lang.message.closed", "&9Error: &cThat shop is closed.")
+                plugin.config.setDefault("lang.message.information", "&9{shop} &7is owned by &9{name}.")
+                plugin.config.setDefault("lang.message.default", "&9{shop} &7is now default! Type &9/shop &7to go there.")
                 plugin.config.save()
                 
                 plugin.print("Shoppy has been enabled, version "..plugin.version)
@@ -95,6 +97,13 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.4",
                     if shops.exists(args[1]) then
                         local data = shops.load(args[1])
                         if data.open == true then
+                            local str = data.posX .. " " ..data.posY.. " " ..data.posZ.. " " ..data.posP.. " " ..data.posW
+                            local message = plugin.config.get("lang.message.information")
+                            message = string.gsub(message, "{shop}", args[1])
+                            message = string.gsub(message, "{name}", sender:getName())
+                            message = string.gsub(message, "&", "§")
+                            sender:sendMessage(message)
+                            server:dispatchCommand(server:getConsoleSender(), "minecraft:tp "..sender:getName().." "..str )
                         else
                             local message = plugin.config.get("lang.message.closed")
                             message = string.gsub(message, "{shop}", args[1])
@@ -106,6 +115,61 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.4",
                         message = string.gsub(message, "{shop}", args[1])
                         message = string.gsub(message, "&", "§")
                         sender:sendMessage(message)
+                    end
+                else
+                    local message = plugin.config.get("lang.message.permission")
+                    message = string.gsub(message, "{shop}", args[1])
+                    message = string.gsub(message, "&", "§")
+                    sender:sendMessage(message)
+                end
+            end
+        )
+        
+        plugin.addCommand("shoppy", "Manage your shop", "/shoppy ?",
+            function(sender, args)
+                if sender:hasPermission("shoppy.setdefault") or sender:hasPermission("shoppy.manage") or sender:hasPermission("shoppy.admin") then
+                    if args[1] == "admin" then
+                        if args[2] == "create" then
+                        elseif args[2] == "delete" then
+                        elseif args[2] == "rename" then
+                        elseif args[2] == "transfer" then
+                        elseif args[2] == "default" then
+                            if args[3] then
+                                if shops.exists(args[3]) == true then
+                                else
+                                    local message = plugin.config.get("lang.message.missing")
+                                    message = string.gsub(message, "{shop}", args[3])
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
+                                end
+                            else
+                                sender:sendMessage("§7/shoppy admin default {shop}")
+                            end
+                        else
+                            sender:sendMessage("§cStaff commands for /shoppy")
+                            sender:sendMessage("§7/shoppy admin create {shop}")
+                            sender:sendMessage("§7/shoppy admin delete {shop}")
+                            sender:sendMessage("§7/shoppy admin rename {shop} {new}")
+                            sender:sendMessage("§7/shoppy admin transfer {shop} {name}")
+                            sender:sendMessage("§7/shoppy admin default {shop}")
+                        end
+                    elseif args[1] == "default" then
+                    elseif args[1] == "create" then
+                    elseif args[1] == "rename" then
+                    elseif args[1] == "open" then
+                    elseif args[1] == "close" then
+                    elseif args[1] == "transfer" then
+                    elseif args[1] == "delete" then
+                    else
+                        sender:sendMessage("§cCommands for /shoppy and /shop")
+                        sender:sendMessage("§7/shoppy default {shop}")
+                        sender:sendMessage("§7/shoppy create {shop}")
+                        sender:sendMessage("§7/shoppy rename {shop} {new}")
+                        sender:sendMessage("§7/shoppy transfer {shop} {name}")
+                        sender:sendMessage("§7/shoppy open {shop}")
+                        sender:sendMessage("§7/shoppy close {shop}")
+                        sender:sendMessage("§7/shoppy delete {shop}")
+                        sender:sendMessage("§7/shop [shop] [floor] OR /shop [floor]")
                     end
                 else
                     local message = plugin.config.get("lang.message.permission")
