@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.6",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.7",
     function(plugin)
     
         plugin.onEnable(
@@ -108,7 +108,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.6",
                             server:dispatchCommand(server:getConsoleSender(), "minecraft:tp "..sender:getName().." "..str )
                         else
                             local uuid = sender:getUniqueId():toString()
-                            if data.owner == uuid then
+                            if data.owner == uuid or sender:hasPermission("shoppy.bypass") then
                                 local str = data.posX .. " " ..data.posY.. " " ..data.posZ.. " " ..data.posW.. " " ..data.posP
                                 local message = plugin.config.get("lang.message.information")
                                 message = string.gsub(message, "{shop}", args[1])
