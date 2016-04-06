@@ -3,6 +3,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0",
     
         plugin.onEnable(
             function()
+                plugin.config.setDefault("config.default", "shop")
                 plugin.config.setDefault("lang.message.create", "&7You have created a new shop with the name &9{shop}&7.")
                 plugin.config.setDefault("lang.message.public", "&7The shop &9{shop} &7has been set to &aPublic&7.")
                 plugin.config.setDefault("lang.message.private", "&7The shop &9{shop} &7has been set to &cPrivate&7.")
@@ -17,12 +18,33 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0",
                 plugin.config.save()
                 
                 plugin.print("Shoppy has been enabled, version "..plugin.version)
+                
             end
         )
         
         plugin.onDisable(
             function()
                 plugin.print("Shoppy has been disabled")
+            end
+        )
+        
+        plugin.addCommand("shoppy", "Administration command for the plugin Shoppy", "/shoppy help",
+            function(sender, args)
+                if args[1] == "admin" then
+                    sender:sendMessage("§6============ §cShoppy Admin §6============")
+                    sender:sendMessage("§c/shoppy admin default {shop}")
+                else
+                    sender:sendMessage("§6============ §eShoppy "..plugin.version.." §6============")
+                    plugin.config.setDefault(uuid..".default", "SHOP")
+                    plugin.config.save()
+                    sender:sendMessage("§eYour default shop is: "..plugin.config.get(uuid..".default"))
+                    sender:sendMessage("§eUsage: &o/shop [floor] &eOR &o/shop {shop} [floor]")
+                    sender:sendMessage("§eSet your default shop with /shoppy default {shop} [floor]")
+                    sender:sendMessage("§eThe default server shop is: "..plugin.config.get("config.default"))
+                    if sender:hasPermission("shoppy.admin") then
+                        sender:sendMessage("§cUse /shoppy admin for admin commands")
+                    end
+                end
             end
         )
         
