@@ -98,10 +98,10 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                     if shops.exists(args[1]) then
                         local data = shops.load(args[1])
                         if data.open == true then
-                            local str = data.posX .. " " ..data.posY.. " " ..data.posZ.. " " ..data.posP.. " " ..data.posW
+                            local str = data.posX .. " " ..data.posY.. " " ..data.posZ.. " " ..data.posW.. " " ..data.posP
                             local message = plugin.config.get("lang.message.information")
                             message = string.gsub(message, "{shop}", args[1])
-                            message = string.gsub(message, "{name}", sender:getName())
+                            message = string.gsub(message, "{name}", data.owner)
                             message = string.gsub(message, "&", "§")
                             sender:sendMessage(message)
                             server:dispatchCommand(server:getConsoleSender(), "minecraft:tp "..sender:getName().." "..str )
