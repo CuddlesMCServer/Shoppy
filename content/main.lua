@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.6",
     function(plugin)
     
         plugin.onEnable(
@@ -17,6 +17,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                 plugin.config.setDefault("lang.message.information", "&9{shop} &7is owned by &9{name}.")
                 plugin.config.setDefault("lang.message.default", "&9{shop} &7is now default! Type &9/shop &7to go there.")
                 plugin.config.setDefault("lang.message.taken", "&9Error: &cThat shop already exists.")
+                plugin.config.setDefault("lang.message.whodat", "&9Error: &c{name} has never joined the server.")
                 plugin.config.save()
                 
                 plugin.print("Shoppy has been enabled, version "..plugin.version)
@@ -150,17 +151,25 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                                     sender:sendMessage(message)
                                 else
                                     if args[4] then
-                                        local location = sender:getLocation()
-                                        local posX = location:getX()
-                                        local posY = location:getY()
-                                        local posZ = location:getZ()
-                                        local posP = location:getPitch()
-                                        local posW = location:getYaw()
-                                        shops.create(args[3], args[4], posX, posY, posZ, posP, posW)
-                                        local message = plugin.config.get("lang.message.create")
-                                        message = string.gsub(message, "{shop}", args[3])
-                                        message = string.gsub(message, "&", "§")
-                                        sender:sendMessage(message)
+                                        local offline = server:getOfflinePlayer(args[4])
+                                        if offline:isOnline() or offline:hasPlayedBefore() then
+                                            local location = sender:getLocation()
+                                            local posX = location:getX()
+                                            local posY = location:getY()
+                                            local posZ = location:getZ()
+                                            local posP = location:getPitch()
+                                            local posW = location:getYaw()
+                                            shops.create(args[3], args[4], posX, posY, posZ, posP, posW)
+                                            local message = plugin.config.get("lang.message.create")
+                                            message = string.gsub(message, "{shop}", args[3])
+                                            message = string.gsub(message, "&", "§")
+                                            sender:sendMessage(message)
+                                        else
+                                            local message = plugin.config.get("lang.message.whodat")
+                                            message = string.gsub(message, "{name}", offline:getName())
+                                            message = string.gsub(message, "&", "§")
+                                            sender:sendMessage(message)
+                                        end
                                     else
                                         sender:sendMessage("§7/shoppy admin create {shop} {owner}")
                                     end
@@ -169,6 +178,21 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                                 sender:sendMessage("§7/shoppy admin create {shop} {owner}")
                             end
                         elseif args[2] == "delete" then
+                            if args[3] then
+                                if shops.exists(args[3]) then
+                                    shops.delete(args[3])
+                                    local message = plugin.config.get("lang.message.deleted")
+                                    message = string.gsub(message, "{shop}", args[3])
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
+                                else
+                                    local message = plugin.config.get("lang.message.missing")
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
+                                end
+                            else
+                                sender:sendMessage("§7/shoppy admin delete {shop}")
+                            end
                         elseif args[2] == "rename" then
                         elseif args[2] == "transfer" then
                         elseif args[2] == "default" then
