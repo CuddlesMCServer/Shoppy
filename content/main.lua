@@ -106,10 +106,21 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.5",
                             sender:sendMessage(message)
                             server:dispatchCommand(server:getConsoleSender(), "minecraft:tp "..sender:getName().." "..str )
                         else
-                            local message = plugin.config.get("lang.message.closed")
-                            message = string.gsub(message, "{shop}", args[1])
-                            message = string.gsub(message, "&", "§")
-                            sender:sendMessage(message)
+                            local uuid = sender:getUniqueId():toString()
+                            if data.owner == uuid then
+                                local str = data.posX .. " " ..data.posY.. " " ..data.posZ.. " " ..data.posW.. " " ..data.posP
+                                local message = plugin.config.get("lang.message.information")
+                                message = string.gsub(message, "{shop}", args[1])
+                                message = string.gsub(message, "{name}", data.owner)
+                                message = string.gsub(message, "&", "§")
+                                sender:sendMessage(message)
+                                server:dispatchCommand(server:getConsoleSender(), "minecraft:tp "..sender:getName().." "..str )
+                            else
+                                local message = plugin.config.get("lang.message.closed")
+                                message = string.gsub(message, "{shop}", args[1])
+                                message = string.gsub(message, "&", "§")
+                                sender:sendMessage(message)
+                            end
                         end
                     else
                         local message = plugin.config.get("lang.message.missing")
