@@ -96,7 +96,11 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.4",
                         local data = shops.load(args[1])
                         if data.open == true then
                         else
-                            
+                            local message = plugin.config.get("lang.message.closed")
+                            message = string.gsub(message, "{shop}", args[1])
+                            message = string.gsub(message, "&", "§")
+                            sender:sendMessage(message)
+                        end
                     else
                         local message = plugin.config.get("lang.message.missing")
                         message = string.gsub(message, "{shop}", args[1])
