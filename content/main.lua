@@ -30,6 +30,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.1",
         
         plugin.addCommand("shoppy", "Administration command for the plugin Shoppy", "/shoppy help",
             function(sender, args)
+                local uuid = sender:getUniqueId():toString()
                 if args[1] == "admin" then
                     sender:sendMessage("§6============ §cShoppy Admin §6============")
                     sender:sendMessage("§c/shoppy admin default {shop}")
