@@ -1,4 +1,4 @@
-local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.7",
+local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.9",
     function(plugin)
     
         plugin.onEnable(
@@ -18,6 +18,7 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.7",
                 plugin.config.setDefault("lang.message.default", "&9{shop} &7is now default! Type &9/shop &7to go there.")
                 plugin.config.setDefault("lang.message.taken", "&9Error: &cThat shop already exists.")
                 plugin.config.setDefault("lang.message.whodat", "&9Error: &c{name} has never joined the server.")
+                plugin.config.setDefault("lang.message.renamed", "&7You have renamed the shop &9{old} &7to &9{new}&7.")
                 plugin.config.save()
                 
                 plugin.print("Shoppy has been enabled, version "..plugin.version)
@@ -194,7 +195,51 @@ local Shoppy = lukkit.addPlugin("Shoppy", "dev1.0.7",
                                 sender:sendMessage("§7/shoppy admin delete {shop}")
                             end
                         elseif args[2] == "rename" then
+                            if args[3] and args[4] then
+                                if shops.exists(args[3]) then
+                                    if not shops.exists(args[4]) then
+                                        local data = shops.load(args[3])
+                                        shops.delete(args[3])
+                                        shops.save(data, args[4])
+                                    else
+                                        local message = plugin.config.get("lang.message.taken")
+                                        message = string.gsub(message, "&", "§")
+                                        sender:sendMessage(message)
+                                    end
+                                else
+                                    local message = plugin.config.get("lang.message.missing")
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
+                                end
+                            else
+                                sender:sendMessage("§7/shoppy admin rename {shop} {new}")
+                            end
                         elseif args[2] == "transfer" then
+                            if args[3] and args[4] then
+                                if shops.exists(args[3]) then
+                                    local offline = server:getOfflinePlayer(args[4])
+                                    if offline:isOnline() or offline:hasPlayedBefore() then
+                                        local uuid = offline:getUniqueId():toString()
+                                        local data = shops.load(args[3])
+                                        data.owner = uuid
+                                        shops.save(data, args[3])
+                                        local message = plugin.config.get("lang.message.transfer")
+                                        message = string.gsub(message, "{name}", data.owner)
+                                        message = string.gsub(message, "{shop}", args[3])
+                                        sender:sendMessage(message)
+                                    else
+                                        local message = plugin.config.get("lang.message.whodat")
+                                        message = string.gsub(message, "&", "§")
+                                        sender:sendMessage(message)
+                                    end
+                                else
+                                    local message = plugin.config.get("lang.message.missing")
+                                    message = string.gsub(message, "&", "§")
+                                    sender:sendMessage(message)
+                                end
+                            else
+                                sender:sendMessage("§7/shoppy admin transfer {shop} {owner}")
+                            end
                         elseif args[2] == "default" then
                             if args[3] then
                                 if shops.exists(args[3]) == true then
